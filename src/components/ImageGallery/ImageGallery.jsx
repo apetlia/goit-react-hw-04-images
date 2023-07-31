@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import ImageGalleryItem from 'components/ImageGalleryItem';
 
 export const ImageGallery = ({ items }) => {
   return (

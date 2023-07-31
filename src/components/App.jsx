@@ -6,7 +6,7 @@ import { ThreeDots } from 'react-loader-spinner';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import * as Pixabay from 'services/pixabay_api';
-import { Button } from './Button/Button';
+import Button from './Button';
 
 export class App extends Component {
   state = {

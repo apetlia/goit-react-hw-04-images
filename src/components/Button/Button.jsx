@@ -1,12 +1,14 @@
 import styled from '@emotion/styled';
 
-export const Button = ({ onClick }) => {
+const Button = ({ onClick }) => {
   return (
     <LoadMore type="button" onClick={onClick}>
       Load More
     </LoadMore>
   );
 };
+
+export default Button;
 
 const LoadMore = styled.button`
   padding: 8px 16px;
