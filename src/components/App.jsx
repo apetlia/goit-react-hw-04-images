@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { ThreeDots } from 'react-loader-spinner';
 
 import { Searchbar } from './Searchbar/Searchbar';
@@ -12,7 +11,7 @@ import { Button } from './Button/Button';
 export class App extends Component {
   state = {
     userSearch: '',
-    searchResult: [],
+    searchResult: null,
     page: 1,
     showLoadMore: false,
     isLoading: false,
@@ -20,7 +19,16 @@ export class App extends Component {
 
   handleSubmit = async ({ userSearch }) => {
     try {
-      this.setState({ isLoading: true, searchResult: [] });
+      if (userSearch.trim() === '') {
+        toast.info('Введите поисковый запрос');
+        return;
+      }
+
+      this.setState({
+        isLoading: true,
+        searchResult: null,
+        showLoadMore: false,
+      });
 
       const searchResult = await Pixabay.getImages({
         search: userSearch,
@@ -77,7 +85,7 @@ export class App extends Component {
     return (
       <Wrapper>
         <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery items={searchResult} />
+        {searchResult && <ImageGallery items={searchResult} />}
         {this.state.isLoading && (
           <ThreeDots
             color="#3f51b5"
