@@ -12,64 +12,46 @@ export class App extends Component {
   state = {
     userSearch: '',
     searchResult: null,
-    page: 1,
+    page: 0,
     showLoadMore: false,
     isLoading: false,
   };
 
-  handleSubmit = async ({ userSearch }) => {
+  async componentDidUpdate(prevProps, prevState) {
+    const prevPage = prevState.page;
+    const nextPage = this.state.page;
+
+    const prevSearch = prevState.userSearch;
+    const nextSearch = this.state.userSearch;
+
+    if (nextSearch.trim() === '') {
+      toast.info('Введите поисковый запрос');
+      return;
+    }
+
+    if (prevSearch === nextSearch && prevPage === nextPage) {
+      return;
+    }
+
     try {
-      if (userSearch.trim() === '') {
-        toast.info('Введите поисковый запрос');
-        return;
-      }
+      this.setState({ isLoading: true });
 
-      this.setState({
-        isLoading: true,
-        searchResult: null,
-        showLoadMore: false,
-      });
-
-      const searchResult = await Pixabay.getImages({
-        search: userSearch,
-        page: 1,
-      });
+      const searchResult = await Pixabay.getImages(nextSearch, nextPage);
 
       if (searchResult.length === 0) {
-        toast.info('По вашему запросу ничего не найдено');
-        return;
-      }
+        this.setState({ showLoadMore: false });
 
-      this.setState({
-        userSearch,
-        searchResult,
-        page: 1,
-        showLoadMore: true,
-      });
-    } catch (error) {
-      toast.error('Упс, что-то пошло не так, перезагрузите страницу');
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
+        if (this.state.searchResult.length > 0) {
+          toast.info('Картинок больше нет');
+          return;
+        }
 
-  handleLoadMore = async () => {
-    try {
-      this.setState({ isLoading: true, showLoadMore: false });
-
-      const nextResult = await Pixabay.getImages({
-        search: this.state.userSearch,
-        page: this.state.page + 1,
-      });
-
-      if (nextResult.length === 0) {
-        toast.info('Больше картинок нет');
+        toast.info(`По вашему запросу ${nextSearch} ничего не найдено`);
         return;
       }
 
       this.setState(prevState => ({
-        page: prevState.page + 1,
-        searchResult: [...prevState.searchResult, ...nextResult],
+        searchResult: [...prevState.searchResult, ...searchResult],
         showLoadMore: true,
       }));
     } catch (error) {
@@ -77,6 +59,21 @@ export class App extends Component {
     } finally {
       this.setState({ isLoading: false });
     }
+  }
+
+  handleSubmit = ({ userSearch }) => {
+    this.setState({
+      userSearch,
+      page: 1,
+      searchResult: [],
+      showLoadMore: false,
+    });
+  };
+
+  handleLoadMore = () => {
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
+    });
   };
 
   render() {
