@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import styled from '@emotion/styled';
 import { ToastContainer, toast } from 'react-toastify';
-import { ThreeDots } from 'react-loader-spinner';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { Searchbar } from './Searchbar/Searchbar';
-import { ImageGallery } from './ImageGallery/ImageGallery';
+import Searchbar from '../Searchbar';
+import ImageGallery from '../ImageGallery';
 import * as Pixabay from 'services/pixabay_api';
-import Button from './Button';
+import Button from '../Button';
+import Loader from '../Loader';
+import { Wrapper } from './App.styled';
 
 export class App extends Component {
   state = {
@@ -83,22 +84,10 @@ export class App extends Component {
       <Wrapper>
         <Searchbar onSubmit={this.handleSubmit} />
         {searchResult && <ImageGallery items={searchResult} />}
-        {this.state.isLoading && (
-          <ThreeDots
-            color="#3f51b5"
-            wrapperStyle={{ justifyContent: 'center' }}
-          />
-        )}
+        {this.state.isLoading && <Loader />}
         {this.state.showLoadMore && <Button onClick={this.handleLoadMore} />}
         <ToastContainer hideProgressBar autoClose={3000} />
       </Wrapper>
     );
   }
 }
-
-const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 16px;
-  padding-bottom: 24px;
-`;

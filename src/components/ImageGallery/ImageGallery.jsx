@@ -1,9 +1,10 @@
-import styled from '@emotion/styled';
+import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem';
+import { List } from './ImageGallery.styled';
 
-export const ImageGallery = ({ items }) => {
+const ImageGallery = ({ items }) => {
   return (
-    <List className="gallery">
+    <List>
       {items.map(({ id, ...otherProps }) => {
         return <ImageGalleryItem key={id} item={otherProps} />;
       })}
@@ -11,15 +12,10 @@ export const ImageGallery = ({ items }) => {
   );
 };
 
-const List = styled.ul`
-  display: grid;
-  max-width: calc(100vw - 48px);
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  grid-gap: 16px;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 0;
-  list-style: none;
-  margin-left: auto;
-  margin-right: auto;
-`;
+export default ImageGallery;
+
+ImageGallery.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired
+  ).isRequired,
+};

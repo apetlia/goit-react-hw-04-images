@@ -8,7 +8,7 @@ export const getImages = async (search, page = 1) => {
       key: '36515340-d2bd45b3d1303b51fd4615e59',
       image_type: 'photo',
       orientation: 'horizontal',
-      per_page: 50,
+      per_page: 12,
     },
   });
 

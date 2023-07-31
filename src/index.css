@@ -1,5 +1,4 @@
 @import-normalize; /* bring in normalize.css styles */
-@import url('react-toastify/dist/ReactToastify.css');
 
 html {
   box-sizing: border-box;

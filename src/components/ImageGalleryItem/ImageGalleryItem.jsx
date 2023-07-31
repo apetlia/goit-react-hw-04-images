@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import { Component } from 'react';
 import { Card } from './ImageGalleryItem.styled';
 import Modal from 'components/Modal';
@@ -17,7 +19,7 @@ class ImageGalleryItem extends Component {
 
     return (
       <>
-        <Card className="gallery-item" onClick={this.toggleModal}>
+        <Card onClick={this.toggleModal}>
           <img src={item.webformatURL} alt={item.tags} />
         </Card>
         {showModal && <Modal item={item} closeModal={this.toggleModal} />}
@@ -27,3 +29,10 @@ class ImageGalleryItem extends Component {
 }
 
 export default ImageGalleryItem;
+
+ImageGalleryItem.propTypes = {
+  item: PropTypes.shape({
+    webformatURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+  }).isRequired,
+};
