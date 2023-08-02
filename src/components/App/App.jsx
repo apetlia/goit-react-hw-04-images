@@ -78,14 +78,14 @@ export class App extends Component {
   };
 
   render() {
-    const { searchResult } = this.state;
+    const { searchResult, isLoading, showLoadMore } = this.state;
 
     return (
       <Wrapper>
         <Searchbar onSubmit={this.handleSubmit} />
         {searchResult && <ImageGallery items={searchResult} />}
-        {this.state.isLoading && <Loader />}
-        {this.state.showLoadMore && <Button onClick={this.handleLoadMore} />}
+        {isLoading && <Loader />}
+        {showLoadMore && <Button onClick={this.handleLoadMore} />}
         <ToastContainer hideProgressBar autoClose={3000} />
       </Wrapper>
     );
