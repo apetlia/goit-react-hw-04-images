@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const ModalOverlay = styled.div`
+export const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -16,12 +16,4 @@ export const ModalOverlay = styled.div`
 export const ModalContent = styled.div`
   width: calc(100vw - 48px);
   height: calc(100vh - 24px);
-`;
-
-export const LargeImage = styled.img`
-  display: block;
-  height: 100%;
-  width: 100%;
-
-  object-fit: contain;
 `;

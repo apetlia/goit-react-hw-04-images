@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { LargeImage, ModalContent, ModalOverlay } from './Modal.styled';
+import { ModalContent, ModalBackdrop } from './Modal.styled';
 import { createPortal } from 'react-dom';
 
 const modalRoot = document.querySelector('#modal-root');
@@ -8,6 +8,12 @@ const modalRoot = document.querySelector('#modal-root');
 export default class Modal extends Component {
   closeModalESC = e => {
     if (e.code === 'Escape') {
+      this.props.closeModal();
+    }
+  };
+
+  handleClickBackdrop = e => {
+    if (e.target === e.currentTarget) {
       this.props.closeModal();
     }
   };
@@ -21,23 +27,15 @@ export default class Modal extends Component {
   }
 
   render() {
-    const { item, closeModal } = this.props;
-
     return createPortal(
-      <ModalOverlay onClick={closeModal}>
-        <ModalContent>
-          <LargeImage src={item.largeImageURL} alt={item.tags} />
-          {this.props.children}
-        </ModalContent>
-      </ModalOverlay>,
+      <ModalBackdrop onClick={this.handleClickBackdrop}>
+        <ModalContent>{this.props.children}</ModalContent>
+      </ModalBackdrop>,
       modalRoot
     );
   }
 }
 
 Modal.propTypes = {
-  item: PropTypes.shape({
-    largeImageURL: PropTypes.string.isRequired,
-  }).isRequired,
   closeModal: PropTypes.func.isRequired,
 };
