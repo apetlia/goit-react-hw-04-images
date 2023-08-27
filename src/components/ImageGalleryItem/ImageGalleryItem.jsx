@@ -1,41 +1,33 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'components/Modal';
 import { Card } from './ImageGalleryItem.styled';
 import { Thumb } from './Thumb.styled';
 
-class ImageGalleryItem extends Component {
-  state = {
-    showModal: false,
+function ImageGalleryItem({ item }) {
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(prevState => !prevState);
   };
 
-  toggleModal = () => {
-    this.setState(prevState => ({ showModal: !prevState.showModal }));
-  };
+  const { webformatURL, tags, largeImageURL } = item;
 
-  render() {
-    const {
-      item: { webformatURL, tags, largeImageURL },
-    } = this.props;
-
-    const { showModal } = this.state;
-
-    return (
-      <>
-        <Card onClick={this.toggleModal}>
-          <img src={webformatURL} alt={tags} />
-        </Card>
-        {showModal && (
-          <Modal closeModal={this.toggleModal}>
-            <Thumb>
-              <img src={largeImageURL} alt={tags} />
-            </Thumb>
-          </Modal>
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      <Card onClick={toggleModal}>
+        <img src={webformatURL} alt={tags} />
+      </Card>
+      {showModal && (
+        <Modal closeModal={toggleModal}>
+          <Thumb>
+            <img src={largeImageURL} alt={tags} />
+          </Thumb>
+        </Modal>
+      )}
+    </>
+  );
 }
 
 export default ImageGalleryItem;
