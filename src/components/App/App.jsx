@@ -17,6 +17,7 @@ export const App = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const isFirstRender = useRef(true);
+  const searchResultLength = useRef(0);
 
   const handleLoadMore = () => {
     setPage(prevState => prevState + 1);
@@ -27,6 +28,7 @@ export const App = () => {
     setUserSearch(userSearch);
     setSearchResult([]);
     setShowLoadMore(false);
+    searchResultLength.current = 0;
   };
 
   useEffect(() => {
@@ -45,11 +47,11 @@ export const App = () => {
     const fetchedResult = Pixabay.getImages(userSearch, page);
 
     fetchedResult
-      .then(res => {
-        if (res.length === 0) {
+      .then(data => {
+        if (data.length === 0) {
           setShowLoadMore(false);
 
-          if (searchResult.length > 0) {
+          if (searchResultLength.current > 0) {
             toast.info('Картинок больше нет');
             return;
           }
@@ -57,7 +59,10 @@ export const App = () => {
           return;
         }
 
-        setSearchResult(prevSearch => [...prevSearch, ...res]);
+        setSearchResult(prevSearch => {
+          searchResultLength.current = prevSearch.length + data.length;
+          return [...prevSearch, ...data];
+        });
         setShowLoadMore(true);
       })
       .catch(error => {
@@ -66,7 +71,6 @@ export const App = () => {
       .finally(() => {
         setIsLoading(false);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSearch, page]);
 
   return (
@@ -79,86 +83,3 @@ export const App = () => {
     </Wrapper>
   );
 };
-
-// export class App1 extends Component {
-//   state = {
-//     userSearch: '',
-//     searchResult: null,
-//     page: 0,
-//     showLoadMore: false,
-//     isLoading: false,
-//   };
-
-//   async componentDidUpdate(prevProps, prevState) {
-//     const prevPage = prevState.page;
-//     const nextPage = this.state.page;
-
-//     const prevSearch = prevState.userSearch;
-//     const nextSearch = this.state.userSearch;
-
-//     if (nextSearch.trim() === '') {
-//       toast.info('Введите поисковый запрос');
-//       return;
-//     }
-
-//     if (prevSearch === nextSearch && prevPage === nextPage) {
-//       return;
-//     }
-
-//     try {
-//       this.setState({ isLoading: true });
-
-//       const searchResult = await Pixabay.getImages(nextSearch, nextPage);
-
-//       if (searchResult.length === 0) {
-//         this.setState({ showLoadMore: false });
-
-//         if (this.state.searchResult.length > 0) {
-//           toast.info('Картинок больше нет');
-//           return;
-//         }
-
-//         toast.info(`По вашему запросу ${nextSearch} ничего не найдено`);
-//         return;
-//       }
-
-//       this.setState(prevState => ({
-//         searchResult: [...prevState.searchResult, ...searchResult],
-//         showLoadMore: true,
-//       }));
-//     } catch (error) {
-//       toast.error('Упс, что-то пошло не так, перезагрузите страницу');
-//     } finally {
-//       this.setState({ isLoading: false });
-//     }
-//   }
-
-//   handleSubmit = ({ userSearch }) => {
-//     this.setState({
-//       userSearch,
-//       page: 1,
-//       searchResult: [],
-//       showLoadMore: false,
-//     });
-//   };
-
-//   handleLoadMore = () => {
-//     this.setState(prevState => {
-//       return { page: prevState.page + 1 };
-//     });
-//   };
-
-//   render() {
-//     const { searchResult, isLoading, showLoadMore } = this.state;
-
-//     return (
-//       <Wrapper>
-//         <Searchbar onSubmit={this.handleSubmit} />
-//         {searchResult && <ImageGallery items={searchResult} />}
-//         {isLoading && <Loader />}
-//         {showLoadMore && <Button onClick={this.handleLoadMore} />}
-//         <ToastContainer hideProgressBar autoClose={3000} />
-//       </Wrapper>
-//     );
-//   }
-// }
