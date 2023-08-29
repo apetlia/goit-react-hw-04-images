@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,42 +16,35 @@ export const App = () => {
   const [showLoadMore, setShowLoadMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFirstRender = useRef(true);
-  const searchResultLength = useRef(0);
-
   const handleLoadMore = () => {
     setPage(prevState => prevState + 1);
   };
 
   const handleSubmit = ({ userSearch }) => {
-    setPage(1);
-    setUserSearch(userSearch);
     setSearchResult([]);
     setShowLoadMore(false);
-    searchResultLength.current = 0;
-  };
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
 
     if (userSearch.trim() === '') {
       toast.info('Введите поисковый запрос');
+    } else {
+      setUserSearch(userSearch.trim());
+      setPage(1);
+    }
+  };
+
+  useEffect(() => {
+    if (userSearch === '') {
       return;
     }
 
     setIsLoading(true);
 
-    const fetchedResult = Pixabay.getImages(userSearch, page);
-
-    fetchedResult
+    Pixabay.getImages(userSearch, page)
       .then(data => {
         if (data.length === 0) {
           setShowLoadMore(false);
 
-          if (searchResultLength.current > 0) {
+          if (page > 1) {
             toast.info('Картинок больше нет');
             return;
           }
@@ -59,10 +52,7 @@ export const App = () => {
           return;
         }
 
-        setSearchResult(prevSearch => {
-          searchResultLength.current = prevSearch.length + data.length;
-          return [...prevSearch, ...data];
-        });
+        setSearchResult(prevSearch => [...prevSearch, ...data]);
         setShowLoadMore(true);
       })
       .catch(error => {
